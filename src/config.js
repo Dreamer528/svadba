@@ -1,4 +1,4 @@
-export const WEDDING_DATE = new Date('2026-07-17T14:30:00+07:00')
+export const WEDDING_DATE = new Date('2026-07-17T15:30:00+07:00')
 
 export const rsvpEndpoint = import.meta.env.VITE_RSVP_ENDPOINT || ''
 

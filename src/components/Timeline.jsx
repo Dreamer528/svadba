@@ -1,9 +1,9 @@
 import AnimatedSection from './AnimatedSection'
 
 const events = [
-  { time: '14:00', title: 'Welcome' },
-  { time: '14:30', title: 'Церемония' },
-  { time: '15:30', title: 'Фотосессия' },
+  { time: '15:00', title: 'Welcome' },
+  { time: '15:30', title: 'Церемония' },
+  { time: '16:00', title: 'Фотосессия' },
   { time: '17:00', title: 'Банкет' },
 ]
 
