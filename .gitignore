@@ -1,0 +1,45 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+.env
+.env.*
+!.env.example
+
+# Local exports and generated/reference artifacts
+backup/
+public/assets/
+public/cdn/
+public/*.html*
+*.pdf
+*.HEIC
+*.mp3
+/IMG_*
+/image.png
+/telegram-cloud-photo-size-*.jpg
+/generate_pdf.py
+/generate_site_pdf.py
+/public/vite.svg
+/public/moon-phases.svg
+/public/Слой*.png
+/src/assets/react.svg
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
