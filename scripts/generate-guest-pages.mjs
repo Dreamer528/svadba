@@ -18,7 +18,7 @@ const guests = [
   { slug: 'natali', prefix: 'Прекрасная,', name: 'Натали' },
   { slug: 'natasha', prefix: 'Милая,', name: 'Наташа' },
   { slug: 'yulya', prefix: 'Дорогая,', name: 'Юля' },
-  { slug: 'boris-i-zhanna', prefix: 'Дорогие,', name: 'Жанна и Борис' },
+  { slug: 'zhanna-i-boris', prefix: 'Дорогие,', name: 'Жанна и Борис' },
   { slug: 'nastyusha', prefix: 'Моя,', name: 'Настюша' },
   { slug: 'margarita-i-andrey', prefix: 'Дорогие,', name: 'Маргарита и Андрей' },
   { slug: 'elena', prefix: 'Прекрасная,', name: 'Елена' },
