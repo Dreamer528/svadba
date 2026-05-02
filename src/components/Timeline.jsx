@@ -1,10 +1,10 @@
 import AnimatedSection from './AnimatedSection'
 
 const events = [
-  { time: '15:00', title: 'Welcome' },
-  { time: '15:30', title: 'Церемония' },
-  { time: '16:00', title: 'Фотосессия' },
+  { time: '15:30', title: 'Сбор гостей' },
+  { time: '16:00', title: 'Церемония' },
   { time: '17:00', title: 'Банкет' },
+  { time: '22:00', title: 'Финал' },
 ]
 
 export default function Timeline() {

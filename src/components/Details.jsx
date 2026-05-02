@@ -35,7 +35,7 @@ export default function Details() {
             </div>
             <div className="details-info-item">
               <h3>Начало</h3>
-              <p>15:30</p>
+              <p>16:00</p>
             </div>
           </div>
         </AnimatedSection>
