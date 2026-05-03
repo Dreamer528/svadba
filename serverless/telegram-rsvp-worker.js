@@ -26,7 +26,7 @@ function parseChatIds(rawChatIds) {
 }
 
 async function sendMessage({ botToken, chatId, text }) {
-  return fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+  const telegramResponse = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -35,6 +35,8 @@ async function sendMessage({ botToken, chatId, text }) {
       disable_web_page_preview: true,
     }),
   })
+  const payload = await telegramResponse.json().catch(() => null)
+  return { chatId, ok: telegramResponse.ok, payload, status: telegramResponse.status }
 }
 
 export default {
@@ -66,15 +68,40 @@ export default {
       return json({ ok: false, error: 'Message is required' }, 400)
     }
 
-    const telegramResponses = await Promise.all(
+    const telegramResults = await Promise.allSettled(
       chatIds.map((chatId) => sendMessage({ botToken, chatId, text }))
     )
 
-    const hasFailure = telegramResponses.some((response) => !response.ok)
-    if (hasFailure) {
-      return json({ ok: false, error: 'Telegram request failed' }, 502)
+    const failures = telegramResults
+      .map((result, index) => {
+        const chatId = chatIds[index]
+        if (result.status === 'rejected') {
+          return { chatId, ok: false, error: result.reason?.message || 'Network error' }
+        }
+        if (!result.value.ok) {
+          return {
+            chatId,
+            ok: false,
+            status: result.value.status,
+            error: result.value.payload?.description || 'Telegram API error',
+          }
+        }
+        return null
+      })
+      .filter(Boolean)
+
+    if (failures.length === chatIds.length) {
+      return json({
+        ok: false,
+        error: 'Telegram request failed for all recipients',
+        failures,
+      }, 502)
     }
 
-    return json({ ok: true })
+    if (failures.length) {
+      return json({ ok: true, warning: 'Some recipients were unreachable', failures })
+    }
+
+    return json({ ok: true, failures: [] })
   },
 }
