@@ -22,6 +22,8 @@ const guests = [
   { slug: 'nastyusha', prefix: 'Моя', name: 'Настюша' },
   { slug: 'margarita-i-andrey', prefix: 'Дорогие', name: 'Маргарита и Андрей' },
   { slug: 'elena', prefix: 'Прекрасная', name: 'Елена' },
+  { slug: 'nasha-irinochka', prefix: 'Наша', name: 'Ириночка' },
+  { slug: 'yulechka-i-bogdan', prefix: 'Дорогие', name: 'Юлечка и Богдан' },
 ]
 
 function escapeHtml(value) {
