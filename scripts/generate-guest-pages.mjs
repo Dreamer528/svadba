@@ -9,19 +9,19 @@ const outputRoot = join(root, 'backup/public-html/invite')
 const siteUrl = 'https://vladislav-and-lyubov.ru'
 
 const guests = [
-  { slug: 'papa-i-alena', prefix: 'Дорогие,', name: 'Папа и Алёна' },
-  { slug: 'anfisa-i-aleksandr', prefix: 'Дорогие,', name: 'Анфиса и Александр' },
-  { slug: 'babulya', prefix: 'Любимая,', name: 'Бабуля' },
-  { slug: 'krestnye-papa-i-mama', prefix: 'Дорогие,', name: 'Крестные папа и мама' },
-  { slug: 'sestra-i-maksim', prefix: 'Дорогие,', name: 'Сестра и Максим' },
-  { slug: 'dyadya-zhenya-i-tetya-galya', prefix: 'Дорогие,', name: 'дядя Женя и тетя Галя' },
-  { slug: 'natali', prefix: 'Прекрасная,', name: 'Натали' },
-  { slug: 'natasha', prefix: 'Милая,', name: 'Наташа' },
-  { slug: 'yulya', prefix: 'Дорогая,', name: 'Юля' },
-  { slug: 'zhanna-i-boris', prefix: 'Дорогие,', name: 'Жанна и Борис' },
-  { slug: 'nastyusha', prefix: 'Моя,', name: 'Настюша' },
-  { slug: 'margarita-i-andrey', prefix: 'Дорогие,', name: 'Маргарита и Андрей' },
-  { slug: 'elena', prefix: 'Прекрасная,', name: 'Елена' },
+  { slug: 'papa-i-alena', prefix: 'Дорогие', name: 'Папа и Алёна' },
+  { slug: 'anfisa-i-aleksandr', prefix: 'Дорогие', name: 'Анфиса и Александр' },
+  { slug: 'babulya', prefix: 'Любимая', name: 'Бабуля' },
+  { slug: 'krestnye-papa-i-mama', prefix: 'Дорогие', name: 'Крестные папа и мама' },
+  { slug: 'sestra-i-maksim', prefix: 'Дорогие', name: 'Сестра и Максим' },
+  { slug: 'dyadya-zhenya-i-tetya-galya', prefix: 'Дорогие', name: 'дядя Женя и тетя Галя' },
+  { slug: 'natali', prefix: 'Прекрасная', name: 'Натали' },
+  { slug: 'natasha', prefix: 'Милая', name: 'Наташа' },
+  { slug: 'yulya', prefix: 'Дорогая', name: 'Юля' },
+  { slug: 'zhanna-i-boris', prefix: 'Дорогие', name: 'Жанна и Борис' },
+  { slug: 'nastyusha', prefix: 'Моя', name: 'Настюша' },
+  { slug: 'margarita-i-andrey', prefix: 'Дорогие', name: 'Маргарита и Андрей' },
+  { slug: 'elena', prefix: 'Прекрасная', name: 'Елена' },
 ]
 
 function escapeHtml(value) {
@@ -38,7 +38,7 @@ function personalize(template, guest) {
   const guestName = guest.name
   const greeting = [
     '  <p class="ch-greeting-text">',
-    `    ${escapeHtml(guest.prefix)}<span>${escapeHtml(guest.name)}</span>`,
+    `    ${escapeHtml(guest.prefix)} <span>${escapeHtml(guest.name)}</span>`,
     '  </p>',
   ].join('\n')
 
