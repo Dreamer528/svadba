@@ -1,4 +1,7 @@
 const http = require('node:http')
+const { randomUUID } = require('node:crypto')
+const { mkdirSync, appendFileSync } = require('node:fs')
+const { dirname } = require('node:path')
 
 const PORT = Number(process.env.PORT || 8787)
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
@@ -6,6 +9,7 @@ const CHAT_IDS = String(process.env.TELEGRAM_CHAT_IDS || process.env.TELEGRAM_CH
   .split(',')
   .map((id) => id.trim())
   .filter(Boolean)
+const SUBMISSION_LOG = process.env.RSVP_LOG_PATH || '/var/log/svadba-rsvp/submissions.log'
 
 function sendJson(res, status, payload) {
   res.writeHead(status, {
@@ -28,6 +32,11 @@ function readBody(req) {
     req.on('end', () => resolve(body))
     req.on('error', reject)
   })
+}
+
+function appendSubmissionLog(entry) {
+  mkdirSync(dirname(SUBMISSION_LOG), { recursive: true })
+  appendFileSync(SUBMISSION_LOG, `${JSON.stringify(entry)}\n`, 'utf8')
 }
 
 async function sendTelegramMessage(chatId, text) {
@@ -70,6 +79,18 @@ async function handleRsvp(req, res) {
     return
   }
 
+  const submissionId = randomUUID()
+  appendSubmissionLog({
+    type: 'received',
+    id: submissionId,
+    receivedAt: new Date().toISOString(),
+    submittedAt: body.submittedAt || null,
+    page: String(body.page || ''),
+    ip: req.headers['x-real-ip'] || req.socket.remoteAddress || null,
+    userAgent: req.headers['user-agent'] || null,
+    message,
+  })
+
   const results = await Promise.allSettled(
     CHAT_IDS.map((chatId) => sendTelegramMessage(chatId, message)),
   )
@@ -97,6 +118,13 @@ async function handleRsvp(req, res) {
 
   if (failures.length === CHAT_IDS.length) {
     console.error('RSVP Telegram delivery failed for all recipients', failures)
+    appendSubmissionLog({
+      type: 'delivery',
+      id: submissionId,
+      deliveredAt: new Date().toISOString(),
+      ok: false,
+      failures,
+    })
     sendJson(res, 502, { ok: false, error: 'Telegram delivery failed', failures })
     return
   }
@@ -104,6 +132,14 @@ async function handleRsvp(req, res) {
   if (failures.length) {
     console.warn('RSVP Telegram delivery partially failed', failures)
   }
+
+  appendSubmissionLog({
+    type: 'delivery',
+    id: submissionId,
+    deliveredAt: new Date().toISOString(),
+    ok: true,
+    failures,
+  })
 
   sendJson(res, 200, { ok: true, failures })
 }

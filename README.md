@@ -33,9 +33,10 @@ Vite автоматически выставляет `base` по имени GitH
 TELEGRAM_BOT_TOKEN=...
 TELEGRAM_CHAT_IDS=123456789,987654321
 PORT=8787
+RSVP_LOG_PATH=/var/log/svadba-rsvp/submissions.log
 ```
 
-Сервис запускается через systemd unit `svadba-rsvp.service`.
+Сервис запускается через systemd unit `svadba-rsvp.service`. Каждая новая заявка дополнительно пишется в JSONL-журнал `RSVP_LOG_PATH`, чтобы её можно было восстановить и переотправить, если Telegram временно не ответит.
 
 В репозитории есть пример Cloudflare Worker: `serverless/telegram-rsvp-worker.js`.
 В воркере нужны секреты `TELEGRAM_BOT_TOKEN` и `TELEGRAM_CHAT_IDS` (или старый `TELEGRAM_CHAT_ID` для совместимости), где `TELEGRAM_CHAT_IDS` — список ID чатов через запятую.

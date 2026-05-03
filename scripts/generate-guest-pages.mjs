@@ -1,4 +1,4 @@
-import { mkdirSync, rmSync, readFileSync, writeFileSync } from 'node:fs'
+import { chmodSync, mkdirSync, rmSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -67,11 +67,16 @@ function personalize(template, guest) {
 const template = readFileSync(templatePath, 'utf8')
 
 rmSync(outputRoot, { recursive: true, force: true })
+mkdirSync(outputRoot, { recursive: true, mode: 0o755 })
+chmodSync(outputRoot, 0o755)
 
 for (const guest of guests) {
   const pageDir = join(outputRoot, guest.slug)
-  mkdirSync(pageDir, { recursive: true })
-  writeFileSync(join(pageDir, 'index.html'), personalize(template, guest))
+  const pagePath = join(pageDir, 'index.html')
+  mkdirSync(pageDir, { recursive: true, mode: 0o755 })
+  chmodSync(pageDir, 0o755)
+  writeFileSync(pagePath, personalize(template, guest), { mode: 0o644 })
+  chmodSync(pagePath, 0o644)
 }
 
 console.log(`Generated ${guests.length} guest pages in backup/public-html/invite`)
