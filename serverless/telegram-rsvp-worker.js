@@ -14,6 +14,29 @@ function json(data, status = 200) {
   })
 }
 
+function parseChatIds(rawChatIds) {
+  if (!rawChatIds) {
+    return []
+  }
+
+  return String(rawChatIds)
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean)
+}
+
+async function sendMessage({ botToken, chatId, text }) {
+  return fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text,
+      disable_web_page_preview: true,
+    }),
+  })
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === 'OPTIONS') {
@@ -24,7 +47,10 @@ export default {
       return json({ ok: false, error: 'Method not allowed' }, 405)
     }
 
-    if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
+    const botToken = env.TELEGRAM_BOT_TOKEN
+    const chatIds = parseChatIds(env.TELEGRAM_CHAT_IDS || env.TELEGRAM_CHAT_ID)
+
+    if (!botToken || !chatIds.length) {
       return json({ ok: false, error: 'Telegram secrets are not configured' }, 500)
     }
 
@@ -40,17 +66,12 @@ export default {
       return json({ ok: false, error: 'Message is required' }, 400)
     }
 
-    const telegramResponse = await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: env.TELEGRAM_CHAT_ID,
-        text,
-        disable_web_page_preview: true,
-      }),
-    })
+    const telegramResponses = await Promise.all(
+      chatIds.map((chatId) => sendMessage({ botToken, chatId, text }))
+    )
 
-    if (!telegramResponse.ok) {
+    const hasFailure = telegramResponses.some((response) => !response.ok)
+    if (hasFailure) {
       return json({ ok: false, error: 'Telegram request failed' }, 502)
     }
 

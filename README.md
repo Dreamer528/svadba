@@ -32,6 +32,8 @@ VITE_RSVP_ENDPOINT=https://your-worker.example.com
 ```
 
 В репозитории есть пример Cloudflare Worker: `serverless/telegram-rsvp-worker.js`.
-В воркере нужны секреты `TELEGRAM_BOT_TOKEN` и `TELEGRAM_CHAT_ID`, а в GitHub Actions endpoint можно передать через repository variable `VITE_RSVP_ENDPOINT`.
+В воркере нужны секреты `TELEGRAM_BOT_TOKEN` и `TELEGRAM_CHAT_IDS` (или старый `TELEGRAM_CHAT_ID` для совместимости), где `TELEGRAM_CHAT_IDS` — список ID чатов через запятую.
+Например:
+`TELEGRAM_CHAT_IDS=123456789,987654321`
 
 Если endpoint не задан, форма сохраняет ответ только в `localStorage` устройства гостя и просит продублировать ответ организатору.
