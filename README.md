@@ -25,11 +25,17 @@ Vite автоматически выставляет `base` по имени GitH
 
 ## RSVP
 
-Форма анкеты не хранит Telegram bot token во фронтенде. Для боевого приёма ответов задайте:
+Форма анкеты не хранит Telegram bot token во фронтенде. В production HTML форма отправляет заявки на `/api/rsvp`, а nginx проксирует запрос в локальный Node endpoint `server/rsvp-server.cjs`.
+
+Для production endpoint задайте env-файл `/etc/svadba-rsvp.env`:
 
 ```bash
-VITE_RSVP_ENDPOINT=https://your-worker.example.com
+TELEGRAM_BOT_TOKEN=...
+TELEGRAM_CHAT_IDS=123456789,987654321
+PORT=8787
 ```
+
+Сервис запускается через systemd unit `svadba-rsvp.service`.
 
 В репозитории есть пример Cloudflare Worker: `serverless/telegram-rsvp-worker.js`.
 В воркере нужны секреты `TELEGRAM_BOT_TOKEN` и `TELEGRAM_CHAT_IDS` (или старый `TELEGRAM_CHAT_ID` для совместимости), где `TELEGRAM_CHAT_IDS` — список ID чатов через запятую.

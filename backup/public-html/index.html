@@ -3689,6 +3689,11 @@ body.hero-fallback-visible .ch-sacred-geo-wrap {
 .rsvp-btn-submit:active {
   transform: scale(0.98) translateY(0);
 }
+.rsvp-btn-submit:disabled {
+  cursor: wait;
+  opacity: 0.65;
+  transform: none;
+}
 .rsvp-success {
   text-align: center;
   max-width: 500px;
@@ -3850,9 +3855,10 @@ body.hero-fallback-visible .ch-sacred-geo-wrap {
 </svg></div>
 
 <script>
-function handleRsvpSubmit(e) {
+async function handleRsvpSubmit(e) {
   e.preventDefault();
   var form = document.getElementById('rsvpForm');
+  var submitButton = form.querySelector('.rsvp-btn-submit');
   var formData = new FormData(form);
   var name = formData.get('name');
   var attendance = formData.get('attendance');
@@ -3872,16 +3878,38 @@ function handleRsvpSubmit(e) {
   if (allergies) text += '\n\ud83c\udf31 Аллергии: ' + allergies;
   if (wishes) text += '\n\ud83d\udcac Пожелания: ' + wishes;
 
-  var TOKEN = '8667271197:AAGb2Yjn86nD7fxZnkGkLp7MrRlQq4vccVk';
-  var CHAT_ID = '6784402449';
-  fetch('https://api.telegram.org/bot' + TOKEN + '/sendMessage', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: CHAT_ID, text: text })
-  }).catch(function(err) { console.error('Send error:', err); });
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Отправляем...';
+  }
 
-  form.style.display = 'none';
-  document.getElementById('rsvpSuccess').style.display = 'block';
+  try {
+    var response = await fetch('/api/rsvp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: text,
+        page: window.location.pathname,
+        submittedAt: new Date().toISOString()
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('RSVP endpoint returned ' + response.status);
+    }
+
+    form.style.display = 'none';
+    document.getElementById('rsvpSuccess').style.display = 'block';
+  } catch (err) {
+    console.error('RSVP send error:', err);
+    alert('Не получилось отправить анкету. Пожалуйста, попробуйте ещё раз или напишите организатору.');
+  } finally {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Отправить';
+    }
+  }
+
   return false;
 }
 </script>
